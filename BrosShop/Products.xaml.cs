@@ -2,6 +2,7 @@
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,62 +23,85 @@ namespace BrosShop
     /// </summary>
     public partial class Products : Window
     {
-        List<BrosShopProductsModel> products = [];
+        private ObservableCollection<BrosShopProductsModel> _products = new(); // Исправлено
+        private ObservableCollection<BrosShopCategoryModel> _categories = new();
+        private BrosShopCategoryModel _brosShopCategoryModel = new();
+
         public Products()
         {
             InitializeComponent();
             LoadCategories();
             LoadProducts();
+            categoryListView.DataContext = _categories;
         }
 
         public void LoadProducts()
         {
+            _products.Clear();
             using Context.BrosShopDbContext context = new();
+
+            // Выполняем запрос к базе данных
             var productsQuery = context.BrosShopProducts
-            .Select(p => new BrosShopProductsModel
+                .Select(p => new BrosShopProductsModel
+                {
+                    BrosShopProductId = p.BrosShopProductId,
+                    BrosShopTitle = p.BrosShopTitle,
+                    BrosShopPrice = p.BrosShopPrice,
+                    BrosShopCategoryTitle = p.BrosShopCategory.BrosShopCategoryTitle,
+                    BrosShopAttributeId = p.BrosShopProductAttributes.Select(pa => pa.BrosShopAttributesId).FirstOrDefault(),
+                    BrosShopDescription = p.BrosShopDescription
+                }).ToList(); // Выполняем запрос здесь
+
+            // Получаем активные категории
+            var activeCategories = _categories
+                .Where(c => c.BrosShopCategoryIsActive)
+                .Select(c => c.BrosShopCategoryTitle)
+                .ToList();
+
+            //MessageBox.Show("Active Categories: " + string.Join(", ", activeCategories));
+
+            // Фильтруем продукты по активным категориям
+            foreach (var product in productsQuery)
             {
-                BrosShopProductId = p.BrosShopProductId,
-                BrosShopTitle = p.BrosShopTitle,
-                BrosShopPrice = p.BrosShopPrice,
-                BrosShopCategory = p.BrosShopCategory.BrosShopCategoryTitle,
-                BrosShopAttributeId = p.BrosShopProductAttributes.Select(p => p.BrosShopAttributesId).FirstOrDefault(),
-                BrosShopDescription = p.BrosShopDescription
+                if (activeCategories.Contains(product.BrosShopCategoryTitle))
+                {
+                    _products.Add(product);
+                }
+            }
 
-            });
-            
-            products = productsQuery.ToList();
-
-            productsListView.ItemsSource = products;
+            productsListView.ItemsSource = _products;
         }
-
-        /*var products = context.BrosShopProducts.Select(p =>
-                new BrosShopProduct { BrosShopTitle = p.BrosShopTitle, BrosShopPrice = p.BrosShopPrice })*;*/
 
         public void LoadCategories()
         {
             using Context.BrosShopDbContext context = new();
-            var categories = context.BrosShopCategories.Select(c =>
-                new BrosShopCategory { BrosShopCategoryTitle = c.BrosShopCategoryTitle});
-              
-            categoryListView.ItemsSource = categories.ToList();
+            var categoriesQuery = context.BrosShopCategories
+                .Select(c => new BrosShopCategoryModel
+                {
+                    BrosShopCategoryId = c.BrosShopCategoryId,
+                    BrosShopCategoryTitle = c.BrosShopCategoryTitle,
+                    BrosShopCategoryIsActive = true
+                }).ToList(); // Выполняем запрос здесь
+
+            _categories = new ObservableCollection<BrosShopCategoryModel>(categoriesQuery);
+            categoryListView.ItemsSource = _categories; // Убираем ToList()
         }
 
-        private void ShowCartButton_Click(object sender, RoutedEventArgs e)
+        private void CategoryCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void Decrement_Click(object sender, RoutedEventArgs e)
-        {
-
-            /*if (products[((ProductModel)productsListView.SelectedItem).product_id - 1].Count > 0)
-                products[((ProductModel)productsListView.SelectedItem).product_id - 1].Count--;*/
-        }
-
-        private void Increment_Click(object sender, RoutedEventArgs e)
-        {
-            /*if (products[((ProductModel)productsListView.SelectedItem).product_id - 1].Count < 10)
-                products[((ProductModel)productsListView.SelectedItem).product_id - 1].Count++;*/
+            if (sender is CheckBox checkBox)
+            {
+                int index = (int)checkBox.Tag;
+                var category = _categories.FirstOrDefault(c => c.BrosShopCategoryId == index);
+                if (category != null)
+                {
+                    category.BrosShopCategoryIsActive = checkBox.IsChecked.GetValueOrDefault(); // Используем GetValueOrDefault
+                    category.OnPropertyChanged(nameof(category.BrosShopCategoryIsActive));
+                    //MessageBox.Show($"Category {category.BrosShopCategoryTitle} is now {(category.BrosShopCategoryIsActive ? "active" : "inactive")}");
+                }
+                LoadProducts();
+            }
         }
     }
+
 }

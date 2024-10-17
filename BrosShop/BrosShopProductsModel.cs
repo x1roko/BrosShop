@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BrosShop
 {
-    public class BrosShopProductsModel : INotifyPropertyChanged
+    public class BrosShopProductsModel
     {
         public int BrosShopProductId { get; set; }
 
@@ -19,28 +19,9 @@ namespace BrosShop
 
         public string? BrosShopDescription { get; set; }
 
-        public string BrosShopCategory { get; set; }
+        public string BrosShopCategoryTitle { get; set; }
 
         public int? BrosShopAttributeId { get; set; }
-
-        private int _BrosShopCount;
-        public int BrosShopCount
-        {
-            get => _BrosShopCount;
-            set
-            {
-                if (_BrosShopCount != value)
-                {
-                    _BrosShopCount = value;
-                    OnPropertyChanged(nameof(BrosShopCount));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public int BrosShopCount { get; set; }
     }
 }

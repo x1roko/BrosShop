@@ -5,7 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BrosShop"
         mc:Ignorable="d"
-        Title="Каталог товаров" Height="450" Width="800">
+        Title="Каталог товаров" Height="450" Width="800" Background="#FF444444">
+    <!--<Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>-->
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -16,34 +24,30 @@
                 <GridView>
                     <GridViewColumn Header="ID" DisplayMemberBinding="{Binding BrosShopProductId}"/>
                     <GridViewColumn Header="Название" DisplayMemberBinding="{Binding BrosShopTitle}"/>
-                    <GridViewColumn Header="Категория" DisplayMemberBinding="{Binding BrosShopCategory}"/>
+                    <GridViewColumn Header="Категория" DisplayMemberBinding="{Binding BrosShopCategoryTitle}"/>
                     <GridViewColumn Header="Описание" DisplayMemberBinding="{Binding BrosShopDescription}"/>
                     <GridViewColumn Header="Цена" DisplayMemberBinding="{Binding BrosShopPrice}" />
-                    <GridViewColumn Header="Количество">
+                    <GridViewColumn Header="Количество" DisplayMemberBinding="{Binding BrosShopCount}"/>
+                    <GridViewColumn Header="Изменить">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="-" Width="20" Margin="0,0,5,0" Click="Decrement_Click"/>
-                                    <TextBlock Text="{Binding Count, Mode=TwoWay}" Width="15" Margin="0,0,5,0"/>
-                                    <Button Content="+" Width="20" Margin="0,0,0,0" Click="Increment_Click"/>
-                                </StackPanel>
+                                <Button/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
         <StackPanel Grid.Column="1">
-            <Button x:Name="showCartButton" Content="Посмотреть корзину" Click="ShowCartButton_Click"/>
             <ListView x:Name="categoryListView">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Категории:" DisplayMemberBinding="{Binding BrosShopCategoryTitle}">
+                        <GridViewColumn Header="Категории">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding BrosShopCategoryTitle}"/>
-                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding BrosShopCategoryTitle}" />
+                                        <CheckBox IsChecked="{Binding BrosShopCategoryIsActive, Mode=TwoWay}" Checked="CategoryCheckBox_Checked" Unchecked="CategoryCheckBox_Checked" Tag="{Binding BrosShopCategoryId}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
