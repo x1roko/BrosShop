@@ -19,6 +19,8 @@ public partial class BrosShopProduct
 
     public int? BrosShopCategoryId { get; set; }
 
+    public decimal BrosShopPurcharesePrice { get; set; }
+
     public virtual BrosShopCategory? BrosShopCategory { get; set; }
 
     public virtual ICollection<BrosShopProductAttribute> BrosShopProductAttributes { get; set; } = new List<BrosShopProductAttribute>();

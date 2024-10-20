@@ -5,20 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BrosShop"
         mc:Ignorable="d"
-        Title="Каталог товаров" Height="450" Width="800" Background="#FF444444">
-    <!--<Window.Resources>
+        Title="Каталог товаров" Height="450" Width="800" Background="#FF444444" WindowStyle="SingleBorderWindow">
+    <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Window.Resources>-->
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="0.3*"/>
         </Grid.ColumnDefinitions>
+
         <ListView x:Name="productsListView">
             <ListView.View>
                 <GridView>
@@ -28,17 +29,18 @@
                     <GridViewColumn Header="Описание" DisplayMemberBinding="{Binding BrosShopDescription}"/>
                     <GridViewColumn Header="Цена" DisplayMemberBinding="{Binding BrosShopPrice}" />
                     <GridViewColumn Header="Количество" DisplayMemberBinding="{Binding BrosShopCount}"/>
-                    <GridViewColumn Header="Изменить">
+                    <GridViewColumn Header="">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button/>
+                                <Button Content="Изменить" Click="CahngeProductButton_Click"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        <StackPanel Grid.Column="1">
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <Button x:Name="addProductButton" Content="Добавить товар" Click="AddProductButton_Click"/>
             <ListView x:Name="categoryListView">
                 <ListView.View>
                     <GridView>

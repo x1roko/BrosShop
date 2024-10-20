@@ -102,6 +102,16 @@ namespace BrosShop
                 LoadProducts();
             }
         }
-    }
 
+        private void CahngeProductButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddProductButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddProductWindow window = new();
+            window.Show();
+        }
+    }
 }

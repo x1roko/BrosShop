@@ -11,11 +11,13 @@ public partial class BrosShopUser
 
     public string BrosShopPassword { get; set; } = null!;
 
-    public string BrosShopEmail { get; set; } = null!;
+    public string? BrosShopEmail { get; set; }
 
     public string? BrosShopFullName { get; set; }
 
     public DateTime BrosShopRegistrationDate { get; set; }
+
+    public string BrosShopPhoneNumber { get; set; } = null!;
 
     public virtual ICollection<BrosShopReview> BrosShopReviews { get; set; } = new List<BrosShopReview>();
 }
